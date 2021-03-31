@@ -1,0 +1,58 @@
+.container-custom {
+    position: relative;
+}
+
+.tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    width: 95%;
+}
+
+.tabs .item-custom {
+    box-shadow: 1px 0 0 0 rgba(0, 0, 0, 0.3);
+    border-bottom: none;
+    line-height: 2.5;
+    padding: 0 .3em;
+    margin-right: 1px;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-size: 0.9em;
+    width: 18%;
+    position: relative;
+    top: 1px;
+
+
+}
+
+.active-custom {
+    background: #fff;
+    box-shadow: none;
+
+    /* background: rgba(255, 0, 0, 0.5); */
+    color: rgba(0, 68, 255, 0.918);
+    z-index: 100
+}
+
+@media (max-width: 960px) and (min-width: 501px) {
+    .tabs .item-custom {
+        width: 50%;
+    }
+}
+
+@media (max-width: 500px) {
+    .tabs .item-custom {
+        width: 50%;
+    }
+}
+
+.panels-item {
+    position: absolute;
+    display: none;
+}
+
+.active-panels {
+    position: relative;
+    display: block;
+}
