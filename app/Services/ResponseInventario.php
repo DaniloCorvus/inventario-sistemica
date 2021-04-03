@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cellar;
 use Illuminate\Support\Facades\DB;
 use App\Models\Inventario;
 use Milon\Barcode\DNS1D;
@@ -35,15 +36,27 @@ class ResponseInventario
 
         ';
         $res = DB::select($query);
+
+
         return datatables($res)
             ->editColumn('action', function ($Inventario) {
                 $button =  '<div class="text-lg-right text-nowrap">';
                 $button .=
-                    '<a class="btn btn-circle btn-primary mr-1" href="/cargue-inventario/' . $Inventario->id . '" 
+                    '<a class="btn btn-circle btn-primary mr-1" href="/cargue-inventario/' . $Inventario->id . '"
                     title="VerHistorial">
                     <i class="fa fa-eye"></i>
                     </a>';
-                $button .= '</div>';
+                    $button .=
+                    '
+
+                        <a  onclick="abrirTranslado('.$Inventario->id.')" href="javascript:void(0)" class="tooltip-wrapper btn btn-circle btn-primary mr-1" data-toggle="modal"
+                        data-placement="top" data-target="#modalHistoriaRegister" title="Traslado de bodega">
+                        <i class="fa fa-fw fa-plus"></i>
+                     </a>
+
+                    ';
+                $button .= '</div>'
+                ;
                 return $button;
             })->editColumn('codigo',  function ($Inventario) {
                 $barra = new DNS1D();

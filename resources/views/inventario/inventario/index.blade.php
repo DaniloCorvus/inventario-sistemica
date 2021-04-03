@@ -20,6 +20,8 @@
                             <i class="fa fa-fw fa-plus"></i>
                         </a>
 
+
+
                         <!-- <a href="javascript:void(0)" class="text-white btn btn-circle btn-dark mr-1" data-toggle="modal"
                             data-placement="top" data-target="#modalProductoImport" title="importar productox">
                             <i class="fa fa-fw fa-upload"></i>
@@ -56,11 +58,18 @@
     </div>
 </div>
 
+
+@include('inventario.inventario.trasladoinventario.formRegisterTraslado')
+
 <!-- @include('inventario.productos.partials.formImport') -->
 @endSection
 
 @push('scripts')
+
+
+
 <script src="{{ asset('/apisInventario/general.js') }}"></script>
+<script src="{{ asset('/apisInventario/trasladoInventario.js') }}"></script>
 <script src="{{ asset('/apisInventario/apiInventario.js') }}"></script>
 <script>
     $('#modalProductoRegister').on('shown.bs.modal', function () {
@@ -68,3 +77,4 @@
     })
 </script>
 @endpush
+

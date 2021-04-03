@@ -31,11 +31,12 @@ class InventarioController extends Controller
     {
         //
         if (request()->expectsJson()) {
-            
+
             return $this->responseInventario->index();
         }
+        $bodegas = Cellar::select('id', 'nombre')->get();
 
-        return view('inventario.inventario.index');
+        return view('inventario.inventario.index',compact('bodegas'));
     }
 
     /**
@@ -62,7 +63,7 @@ class InventarioController extends Controller
         if (request()->expectsJson()) {
 
             try {
-                
+
                 $dataProduct = json_decode(Request()->producto);
                 $dataCargue = $this->reqDataCargue($dataProduct);
 
@@ -70,7 +71,7 @@ class InventarioController extends Controller
                                 ->where('cellar_id',$dataCargue['cellar_id'])
                                 ->where('serie',$dataCargue['serie'])
                                 ->first();
-    
+
                 if($inventario){
                     if($dataCargue['estado'] == 'recibido' ){
                         $inventario->cantidad_disponible += $dataCargue['cantidad'];
@@ -88,7 +89,7 @@ class InventarioController extends Controller
                     'serie' => $dataCargue['serie'],
                     'cellar_id' => $dataCargue['cellar_id'],
                   ])->id;
-            
+
                 }
 
                 unset($dataCargue['serie']);
@@ -149,8 +150,8 @@ class InventarioController extends Controller
     }
 
     public function reqDataCargue($product){
-       
-        $dataCargue = request()->only([ 
+
+        $dataCargue = request()->only([
             "proveedor_id",
            "estado" ,
            "serie",
@@ -179,7 +180,7 @@ class InventarioController extends Controller
         $dataCargue['costo_total'] =  $Cargue->castFloats( $dataCargue['costo_total'] );
         $dataCargue['costo_antes_iva'] =  $Cargue->castFloats( $dataCargue['costo_antes_iva'] );
         $dataCargue['costo_antes_iva'] =  $Cargue->castFloats( $dataCargue['costo_antes_iva'] );
-        
+
         $dataCargue['productox_id'] = $product->id;
         return $dataCargue;
     }
@@ -187,18 +188,18 @@ class InventarioController extends Controller
     public function buscarProducto(){
         $request = Request()->all();
       /*   if (request()->expectsJson()) { */
-          
+
             try {
                 $producto = Productox::where('codigo', '=', $request['codigo'] )->first();
                 if ($producto) {
-                    $sql = ' SELECT i.* 
-                                FROM inventario i 
+                    $sql = ' SELECT i.*
+                                FROM inventario i
                                  WHERE i.productox_id = '.$producto->id.'
                                 AND cellar_id = '.$request['cellar_id'] . ' AND cantidad_disponible >  0 ' ;
                     $inventario  =  DB::select($sql);
-                   
+
                     if(!$inventario){
-                        throw new Exception("No hay cantidades disponibles", 1);                
+                        throw new Exception("No hay cantidades disponibles", 1);
                     }
                     $total = 0;
                     foreach ($inventario as $key => $value) {
@@ -206,7 +207,7 @@ class InventarioController extends Controller
                         $total += $value->cantidad_disponible;
                     }
 
-                    $sql = ' SELECT c.costo_venta FROM cargues_inventario c 
+                    $sql = ' SELECT c.costo_venta FROM cargues_inventario c
                              WHERE c.estado = "recibido"
                      ORDER BY c.fecha_compra DESC LIMIT 1' ;
                     $cargue  =  DB::select($sql);
@@ -215,23 +216,67 @@ class InventarioController extends Controller
                     $producto['costo_venta'] = $cargue[0]->costo_venta;
                     $producto['valor_total'] = $cargue[0]->costo_venta;
                     $producto['inventario'] = $inventario;
-                  
+
                     return response()->json($producto);
                 }else{
-                    throw new Exception("El Producto no existe", 1);                
+                    throw new Exception("El Producto no existe", 1);
                 }
             } catch (\Exception $th) {
                 return response()->json($th->getMessage(),400);
-              
+
             }
 
 
 
         /* }
         return abort(404); */
-       
+
     }
 
+    public function traslado(){
+        try {
+            //code...
+            $data = Request()->all();
+            $inventario = Inventario::find($data['id_inventario']);
+
+            if($inventario->cellar_id == $data['cellar_id'])
+                throw new Exception("Debe seleccionar una bodega diferente", 1);
+
+            if($inventario->cantidad_disponible < $data['cantidad'])
+                throw new Exception("La cantidad es insuficiente", 1);
+
+            $traslado = Inventario::where('cellar_id',$data['cellar_id'])
+                                    ->where('serie',$inventario->serie)
+                                    ->where('productox_id',$inventario->productox_id)
+                                    ->first();
+           # dd($traslado);
+            if($traslado){
+                $traslado->cantidad_disponible += $data['cantidad'];
+                $traslado->save();
+            }else{
+                $traslado = new Inventario();
+                $traslado->productox_id = $inventario->productox_id;
+                $traslado->serie = $inventario->serie;
+                $traslado->cellar_id = $data['cellar_id'];
+                $traslado->cantidad_disponible = $data['cantidad'];
+                $traslado->cantidad = $data['cantidad'];
+                $traslado->save();
+
+            }
+            $saveCantidad = $inventario->cantidad - $data['cantidad'];
+            $inventario->cantidad = $saveCantidad < 0 ? 0 : $saveCantidad;
+
+            $saveCantidadDis = $inventario->cantidad_disponible - $data['cantidad'];
+            $inventario->cantidad_disponible = $saveCantidadDis < 0 ? 0 : $saveCantidadDis;
+
+            $inventario->save();
+            return response()->json(200);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['errors'=>$th->getMessage()],400);
+        }
+    }
 
     public function buscarCantidad(){
 

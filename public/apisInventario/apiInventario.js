@@ -1,7 +1,7 @@
 let btnSaveProducto = document.getElementById("btnSaveProducto");
 
 document.addEventListener('DOMContentLoaded', async function () {
-   
+
     // datatables settings
     $.fn.dataTable.ext.errMode = 'none';
     dataTableInventario = await $('#dataTableInventario').DataTable({
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         {
             data: 'cellar',
             name: 'cellar'
-        }, 
+        },
         {
             data: 'modelo',
             name: 'modelo'
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             data: 'cantidad_disponible',
             name: 'cantidad_disponible'
         },
-      
+
         {
             data: 'action',
             name: 'action',
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    l
+
 })
 
 // Traer datos de cliente
@@ -106,7 +106,9 @@ function eliminarProducto(ente_id) {
                     const success = await axios.delete(url);
                     console.log(success);
                     refresh(success.data)
+
                 } catch (error) {
+
                     toastr.remove()
                     console.error(error);
                 }

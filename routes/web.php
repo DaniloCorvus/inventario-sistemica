@@ -23,7 +23,7 @@ Route::get('/campanas', 'CampanaController@index')->name('campañas.index');
 Route::post('/campanas/sendmessage', 'CampanaController@sendMessage')->name('sendmessage');
 Route::get('/campanas/clientes', 'CampanaController@filtro')->name('filtrar.clientes');
 
-//verifys 
+//verifys
 Route::get('/verify', 'VerifyController@verify');
 Route::get('/verifyequipo', 'VerifyController@verifyEquipo');
 
@@ -231,6 +231,8 @@ Route::get('productos-bodega/{id}', 'CellarController@verProductos');
 
 //inventario
 Route::resource('/inventario', 'InventarioController', ['except' => 'update']);
+Route::post('/traslado-inventario', 'InventarioController@traslado')->name('inventario.traslado');
+
 Route::resource('/cargue-inventario', 'CargueInventarioController', ['only' => 'show']);
 Route::post('/cargue-inventario/estado', 'CargueInventarioController@actualizarEstado')->name('cargue.estado');
 
