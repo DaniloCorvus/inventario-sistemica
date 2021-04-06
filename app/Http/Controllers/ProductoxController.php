@@ -11,6 +11,7 @@ use App\Imports\ProductosImport;
 use App\Models\Cellar;
 use App\Proveedor;
 use App\Services\ResponseProductox;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductoxController extends Controller
@@ -32,7 +33,7 @@ class ProductoxController extends Controller
     public function index()
     {
         if (request()->expectsJson()) {
-            
+
             return $this->responseProducto->index();
         }
         // return  Producto::orderBy('created_at', 'Desc')->get([
@@ -161,25 +162,25 @@ class ProductoxController extends Controller
                 //TODO arreglar esto
                 $producto = Producto::findOrFail($id);
                 // if (count($producto->services()->get()) != 0) {
-                //     return response()->json('Existen equipos asocciados', 400);
-                // }
-                $producto->delete();
-                return response()->json('Producto eliminado correctamente.');
-            } catch (\Throwable $th) {
-                return response()->json($th->getMessage(), 400);
+                    //     return response()->json('Existen equipos asocciados', 400);
+                    // }
+                    $producto->delete();
+                    return response()->json('Producto eliminado correctamente.');
+                } catch (\Throwable $th) {
+                    return response()->json($th->getMessage(), 400);
+                }
             }
+            return abort(404);
         }
-        return abort(404);
-    }
 
-    public function buscarCodigo()
-    {
-        if (request()->expectsJson()) {
-            try {
-                return Producto::where('codigo', request()->get('codigo') )->first();
-            } catch (\Throwable $th) {
-                return response()->json($th->getMessage(), 400);
-            }
+        public function buscarCodigo()
+        {
+            if (request()->expectsJson()) {
+                try {
+                    return Producto::where('codigo', request()->get('codigo') )->first();
+                } catch (\Throwable $th) {
+                    return response()->json($th->getMessage(), 400);
+                }
         }
         return abort(404);
     }
@@ -202,5 +203,21 @@ class ProductoxController extends Controller
         Excel::import(new ProductosImport, request()->file('prodcuts'));
         return back()->with('success', 'All good!');
         // return redirect('/')
+    }
+
+    public function ventas($id){
+        $producto = Producto::find($id);
+        $query = 'SELECT SUM(D.cantidad) AS cantidad, SUM(D.precio * D.cantidad) AS total , D.precio,
+                     V.num_factura, V.created_at as fecha, V.id AS venta_id,
+                    CONCAT_WS(" ",C.nombre,C.Apellido) as cliente
+                    FROM detalles D
+                    INNER JOIN inventario I ON I.id = D.inventario_id
+                    INNER JOIN ventas V ON V.id = D.venta_id
+                    INNER JOIN clientes C ON C.id = V.cliente_id
+                    WHERE I.productox_id = '.$id.'
+                    GROUP BY V.id';
+        $ventas = DB::select($query);
+
+        return view('inventario.productoventas.index', compact('ventas','producto'));
     }
 }

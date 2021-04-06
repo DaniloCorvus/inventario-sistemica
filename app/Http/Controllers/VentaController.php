@@ -10,6 +10,7 @@ use App\Imports\VentasImport;
 use App\Cliente;
 use App\Models\Cellar;
 use App\Models\Detalle;
+use App\Models\Inventario;
 //use App\Models\Producto;
 use App\Services\ResponseVenta;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -51,62 +52,59 @@ class VentaController extends Controller
     {
 
         if (request()->expectsJson()) {
-           
+          // dd(request()->all());
             try {
 
                 DB::beginTransaction();
 
-              /*   foreach (request()->get(4)['productos'] as $prodcuto) {
-                    //$query =  ' SELECT  Cantidad_Disponible '
-                    $prodcutox = Producto::findOrFail($prodcuto['producto']['id']);
-                    if ($prodcutox->cant_disponible < $prodcuto['cantidad']) {
-                        return response()->json("La cantidad ingresada del producto $prodcutox->descripcion es mayor a la que esta en stock ", 400);
-                    }
-                } */
-
                 $venta =   Venta::create([
                     'total_bruto'   => request()->get(0)['total_bruto'],
-                    'impuesto'      => request()->get(1)['impuesto'],
-                    'total'         => request()->get(2)['total'],
-                    'cliente_id'    => request()->get(3)['cliente_id'],
-                    'observaciones' => request()->get(4)['observaciones'],
-                    'num_factura' => request()->get(5)['num_factura'],
+                    'total_impuesto'      => request()->get(1)['impuesto'],
+                    'total_rtFuente'      => request()->get(2)['total_rtFuente'],
+                    'total'         => request()->get(3)['total'],
+                    'cliente_id'    => request()->get(4)['cliente_id'],
+                    'observaciones' => request()->get(5)['observaciones'],
+                    'num_factura' => request()->get(6)['num_factura'],
                 ]);
 
-                foreach (request()->get(6)['productos'] as $prod) {
+                foreach (request()->get(7)['productos'] as $prod) {
                     foreach ($prod['series'] as  $serie) {
                         # code...
                         //dd($serie['inventario']['id']);
+                        $inv = Inventario::find($serie['inventario']['id']);
+                        $inv->cantidad_disponible -= $serie['seleccionado'];
+                        $inv->save();
+
                         Detalle::create([
                             'cantidad'       => $serie['seleccionado'],
                             'precio'         => $prod['producto']['costo_venta'],
                             'inventario_id'  => $serie['inventario']['id'],
+                            'rtFuente'  => $prod['rtFuente'],
+                            'impuesto'  => $prod['impuesto'],
                             'venta_id'       => $venta->id
                         ]);
 
                     }
                 }
 
-                
-         //       $detalles = $venta->detalles()->with('inventario')->with('producto')->get();
+
+
                 $detalles = $venta->detalles()->with([
-                   /*  'detalles' => function($query) {
-                        $query->select('id', 'cantidad','precio','inventario_id'); # Muchos a muchos
-                    },  */
                     'inventario' => function($query) {
                         $query->select('id', 'productox_id','serie'); # Muchos a muchos
-                    }, 
+                    },
                     'inventario.producto' => function($query) {
                         $query->select('id', 'descripcion', 'modelo' ); # Uno a muchos
                     }
                     ])->get();
 
                 $cliente = $venta->cliente()->first();
-              #  dd($detalles[0]->inventario->producto->modelo);exit;
-               # return view('pdfs.remision', compact('venta', 'detalles','cliente'));
+
+                DB::commit();
                 $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
                     ->save(public_path("pdfs/remision.pdf"));
-                DB::commit();
+               /*  return view('pdfs.remision', compact('venta', 'detalles','cliente')); */
+
                 return  response()->download(public_path("/pdfs/remision.pdf"))->deleteFileAfterSend(true);
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -129,6 +127,12 @@ class VentaController extends Controller
         return abort(404);
     }
 
+   /*  public function descontarInventario($productos){
+        foreach ($variable as $key => $value) {
+            # code...
+        }
+    } */
+
 
     /**
      * Show the form for editing the specified resource.
@@ -146,7 +150,7 @@ class VentaController extends Controller
     public function create()
     {
         $bodegas = Cellar::select('id', 'nombre')->get();
-       
+
         $clientes = Cliente::get(['nombre', 'apellido', 'id']);
         return view('inventario.ventas.partials.formRegister', compact('clientes','bodegas'));
     }
@@ -160,7 +164,7 @@ class VentaController extends Controller
      */
     public function update(Request $request)
     {
-      
+
         if (request()->expectsJson()) {
             try {
                 $producto = Venta::findOrFail($request->id);

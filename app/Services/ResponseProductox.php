@@ -22,6 +22,11 @@ class ResponseProductox
                     title="Eliminar">
                     <i class="fa fa-fw fa-trash"></i>
                     </a>';
+                $button .=
+                    '<a class="btn btn-circle btn-success" style="margin-left:5px;" href="/productox/'. $producto->id .'/ventas"
+                    title="Ventas">
+                    <i class="fa fa-fw fa-store"></i>
+                    </a>';
                 $button .= '</div>';
                 return $button;
             })

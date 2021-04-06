@@ -281,4 +281,41 @@ class InventarioController extends Controller
     public function buscarCantidad(){
 
     }
+
+    public function qoptimo(){
+        $valor = 0;
+        $numeroPedidoEsperado = 0;
+        $tiempoEsperaPedidos = 0;
+        $demandaDiaria = 0;
+        $Ganancia = 0;
+        /************************************************************** */
+        $Demanda = 1200;
+        $SOrdenar = 20;
+        $SOrdenarx = 0;
+        $valorCostoMantener = 0.3;
+        $valorCostoMantenerx = 0;
+        $diasPeriodo = 240;
+        $total = 0;
+
+        if ($Demanda > 0) {
+            $DemandaOptima = sqrt((2 * $Demanda * $SOrdenar) / $valorCostoMantener);
+            $numeroPedidoEsperado = $Demanda / $DemandaOptima;
+
+            $tiempoEsperaPedidos = $diasPeriodo / $numeroPedidoEsperado;
+            $demandaDiaria = ($Demanda / $diasPeriodo) * $tiempoEsperaPedidos;
+            $SOrdenarx = ($Demanda / $DemandaOptima) * $SOrdenar;
+            $valorCostoMantenerx = ($DemandaOptima * $valorCostoMantener) / 2;
+            $total = ($Demanda * $SOrdenarx) + $SOrdenarx + $valorCostoMantenerx;
+
+            dd([
+                'Q' => $DemandaOptima,
+                'N' => $numeroPedidoEsperado,
+                'L' => $tiempoEsperaPedidos,
+                'R' => $demandaDiaria,
+                'CO' => $SOrdenarx,
+                'CM' => $valorCostoMantenerx,
+                'CT' => $total
+            ]);
+        }
+    }
 }

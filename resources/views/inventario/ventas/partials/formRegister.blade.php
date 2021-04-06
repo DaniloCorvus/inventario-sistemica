@@ -48,20 +48,25 @@
                 <div class="row text-left">
 
                     <div class="table-responsive">
-                        <table class="table align-items-center table-flush table-hover" style="font-size: 0.8em"
+                        <table style="table-layout:fixed;" class="table align-items-center" style="font-size: 0.8em"
                             id="dataTableCodigos">
                             <thead class="thead">
                                 <tr>
-                                    <th>Item</th>
-                                    <th style="width: 30px">Descripción</th>
-                                    <th>Cod</th>
-                                    <th>Modelo</th>
-                                    <th>Cant. Disponibe</th>
-                                    <th>Cant. Venta</th>
-                                    <th style="width: 170px;" class="text-center">Series</th>
-                                    <th>Vr Unidad</th>
-                                    <th>Vr Todtal</th>
-                                    <th style="width: 20px">Eliminar</th>
+
+                                    {{-- <th style="width: 30px">Descripción</th> --}}
+                                    <th style="width: 80px;">Cod</th>
+                                    <th style="width: 100px;">Modelo</th>
+                                    <th style="width: 110px;">Disponibe</th>
+                                    <th style="width: 120px;">C. Venta</th>
+                                    <th style="width: 150px;" class="text-center d">Lotes</th>
+                                    <th style="width: 140px">Vr Unidad</th>
+                                    <th style="width: 90px;"> %RT. Fuente</th>
+                                    <th style="width: 120px;">RT. Fuente</th>
+                                    <th style="width: 120px;">Impuesto</th>
+                                    <th  style="width: 140px;" >Sub. Impuesto</th>
+                                    <th  style="width: 140px;" >Subtotal</th>
+                                    <th style="width: 140px;">Total</th>
+                                    <th style="width: 50px"></th>
                                 </tr>
                             </thead>
                             <tbody id="bodyTableCodigos">
@@ -97,11 +102,17 @@
                         <span class="invalid-feedback" role="alert">
                         </span>
                     </div>
-
                     <div class="col-md-12">
-                        <label class="text-dark"> Impuesto </label>
-                        <input id="impuesto" type="text" class="form-control" name="impuesto"
-                            value="{{ old('impuesto') }}" autocomplete="impuesto" onchange="drawValors()">
+                        <label class="text-dark"> Total RT. Fuente </label>
+                        <input id="total_rtFuente" readonly type="text" class="form-control" name="total_rtFuente"
+                            value="{{ old('total_bruto') }}" autocomplete="total_rtFuente">
+                        <span class="invalid-feedback" role="alert">
+                        </span>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="text-dark">Subtotal Impuesto </label>
+                        <input id="impuesto" type="text" readonly class="form-control" name="impuesto"
+                            value="0" autocomplete="impuesto" onchange="drawValors()">
                         <span class="invalid-feedback" role="alert">
                         </span>
                     </div>

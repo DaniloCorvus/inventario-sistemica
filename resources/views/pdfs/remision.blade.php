@@ -12,14 +12,14 @@
     <title>Certificado de Remisiòn</title>
     <style>
         #invoice {
-            padding: 30px;
+            padding: 10px;
         }
 
         .invoice {
             position: relative;
             background-color: #FFF;
             min-height: 680px;
-            padding: 15px
+            padding: 10px
         }
 
         .invoice header {
@@ -65,7 +65,7 @@
 
         .invoice main .thanks {
           margin-top: -100px;
-            font-size: 1.5em;
+            font-size: 1.3em;
             margin-bottom: 50px
         }
 
@@ -79,7 +79,10 @@
         }
 
         .invoice table {
-            width: 100%;
+            width: 100%!important;
+            table-layout:fixed!important;
+
+
             border-collapse: collapse;
             border-spacing: 0;
             margin-bottom: 20px
@@ -89,32 +92,33 @@
         .invoice table th {
             padding: 15px;
             background: #eee;
-            border-bottom: 1px solid #fff
+            border-bottom: 1px solid #fff;
+
         }
 
         .invoice table th {
             white-space: nowrap;
             font-weight: 400;
-            font-size: 16px
+            font-size: 13px
         }
 
         .invoice table td h3 {
             margin: 0;
             font-weight: 400;
             color: #3989c6;
-            font-size: 1.2em
+            font-size: .7em
         }
 
         .invoice table .qty,
         .invoice table .total,
         .invoice table .unit {
             text-align: right;
-            font-size: 1.2em
+            font-size: .7em;
         }
 
         .invoice table .no {
             color: #fff;
-            font-size: 1.6em;
+            font-size: 1em;
             background: #3989c6
         }
 
@@ -125,19 +129,23 @@
         .invoice table .total {
             background: #3989c6;
             color: #fff
+            font-size: 1.3em!important;
         }
 
         .invoice table tbody tr:last-child td {
             border: none
         }
 
+        .invoice table tfoot  {
+           width: 100%
+        }
         .invoice table tfoot td {
             background: 0 0;
             border-bottom: none;
             white-space: nowrap;
             text-align: right;
             padding: 10px 20px;
-            font-size: 1.2em;
+            font-size: .7em;
             border-top: 1px solid #aaa
         }
 
@@ -147,7 +155,7 @@
 
         .invoice table tfoot tr:last-child td {
             color: #3989c6;
-            font-size: 1.4em;
+            font-size: .7em;
             border-top: 1px solid #3989c6
         }
 
@@ -163,9 +171,19 @@
             padding: 8px 0
         }
 
+
+                td{
+                    width: 20px !important;
+                }
+
+        }
+        .invoice table .totalx {
+
+            font-size: 1.1em!important;
+        }
         @media print {
             .invoice {
-                font-size: 11px !important;
+                font-size: 10px !important;
                 overflow: hidden !important
             }
 
@@ -219,51 +237,64 @@
                         </div>
                         <div class="col invoice-details">
                             <h1 class="invoice-id">Remision {{$venta->id}}</h1>
-                            <div class="date">{{\Carbon\Carbon::now()}}</div>
+                            <div class="date">{{$venta->created_at}}</div>
                         </div>
                     </div>
-                    <table border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 30px">
+                    <table border="0" cellspacing="0" cellpadding="0" class="prod" style="margin-bottom: 30px">
                         <thead>
-                   
                             <tr >
-                                <th>#</th>
-                                <th class="text-left">Descripcion</th>
-                                <th class="text-left">Modelo</th>
-                                <th class="text-left">Serie</th>
-                                <th class="text-right">Cantidad</th>
-                                <th class="text-right">Precio</th>
-                                <th class="text-right">Subtotal</th>
+                                <th style="width: 10px;">#</th>
+                               {{--  <th style="width: 80px;"class="text-left">Desc.</th> --}}
+                                <th style="width: 70px;"class="text-left">Modelo</th>
+                                <th style="width: 70px;"class="text-left">Lote</th>
+                                <th style="width: 20px;"class="text-right">Cant.</th>
+                                <th style="width: 100px;"class="text-right">Precio</th>
+                                <th style="width: 40px;"class="text-right">%Imp.</th>
+                                <th style="width: 140px;"sclass="text-right">% RT. F.</th>
+                                <th style="width: 100px;"class="text-right"> RT F.</th>
+                                <th style="width: 120px;"class="text-right">Sub. Imp.</th>
+                                <th style="width: 2040px;"class="text-right">Subtotal</th>
                             </tr>
-                       
+
                         </thead>
                         <tbody>
+
                             @foreach ($detalles  as $key => $detalle)
                                 <tr >
                                 <td class="no">{{$key + 1}}</td>
-                                    <td class="text-left">{{$detalle->inventario->producto->descripcion}}</td>
-                                    <td class="text-left">{{$detalle->inventario->producto->modelo}}</td>
-                                    <td class="text-left">{{$detalle->inventario->serie}}</td>
-                                    <td class="unit">{{$detalle->cantidad}}</td>
+
+                                    <td class="unit text-left">{{$detalle->inventario->producto->modelo}}</td>
+                                    <td class="unit text-left">{{$detalle->inventario->serie}}</td>
+                                    <td class="unit text-right">{{$detalle->cantidad}}</td>
                                     <td class="qty">${{$detalle->precio}}</td>
-                                    <td class="total">${{$detalle->precio  * $detalle->cantidad}}</td>
+                                    <td >{{$detalle->impuesto}}</td>
+                                    <td class="unit">%{{$detalle->rtFuente}}</td>
+                                    <td class="unit">${{ ($detalle->precio  * $detalle->cantidad) * ($detalle->rtFuente/100)}}</td>
+                                    <td class="unit">${{ ($detalle->precio  * $detalle->cantidad) * ($detalle->impuesto/100)}}</td>
+                                    <td style="width: 2040px;" class="total">${{($detalle->precio  * $detalle->cantidad ) + (($detalle->precio  * $detalle->cantidad) *($detalle->impuesto /100)  ) }}</td>
                                 </tr>
                             @endforeach;
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td colspan="3">SUBTOTAL</td>
-                                <td>${$venta->total_bruto}}</td>
+                        <tfoot >
+                            <tr >
+                                <td  colspan="4"></td>
+                                <td colspan="4">RT. FUENTE</td>
+                                <td colspan="3" class="text-right">${{$venta->total_rtFuente}}</td>
                             </tr>
                             <tr>
-                                <td colspan="3"></td>
-                                <td colspan="3">Impuestos {{$venta->impuesto}} %</td>
-                                <td>${{ ( $venta->impuesto *  $venta->total_bruto ) / 100  }}</td>
+                                <td colspan="4"></td>
+                                <td colspan="4">SUBTOTAL</td>
+                                <td colspan="3" class="text-right">${{$venta->total_bruto}}</td>
                             </tr>
                             <tr>
-                                <td colspan="3"></td>
-                                <td colspan="3">TOTAL</td>
-                                <td>${{$venta->total}}</td>
+                                <td colspan="4"></td>
+                                <td colspan="4">IMPUESTOS</td>
+                                <td colspan="3" >${{ ( $venta->total_impuesto ) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="4" class="totalx">TOTAL</td>
+                                <td colspan="3"class="text-right totalx">${{$venta->total}}</td>
                             </tr>
                         </tfoot>
                     </table>

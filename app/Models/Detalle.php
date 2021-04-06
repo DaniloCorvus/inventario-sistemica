@@ -10,6 +10,8 @@ class Detalle extends Model
     protected $fillable = [
         'inventario_id',
         'venta_id',
+        'impuesto',
+        'rtFuente',
         'cantidad',
         'precio',
     ];

@@ -51,7 +51,7 @@ class ResponseInventario
 
                         <a  onclick="abrirTranslado('.$Inventario->id.')" href="javascript:void(0)" class="tooltip-wrapper btn btn-circle btn-primary mr-1" data-toggle="modal"
                         data-placement="top" data-target="#modalHistoriaRegister" title="Traslado de bodega">
-                        <i class="fa fa-fw fa-plus"></i>
+                        <i class="fa fa-exchange-alt"></i>
                      </a>
 
                     ';

@@ -14,5 +14,6 @@ class Productox extends Model
     static function validarProducto($codigo){
         return Productox::where('codigo', '=', $codigo )->exists() ? true : false;
     }
-   
+
+
 }

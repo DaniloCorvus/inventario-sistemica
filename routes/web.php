@@ -227,6 +227,8 @@ Route::resource('/productox', 'ProductoxController', ['except' => 'update']);
 Route::post('/productox/update', 'ProductoxController@update')->name('productox.update');
 Route::post('/productox/import', 'ProductoxController@import')->name('productox.import');
 
+Route::get('/productox/{id}/ventas', 'ProductoxController@ventas')->name('productox.ventas');
+
 Route::get('productos-bodega/{id}', 'CellarController@verProductos');
 
 //inventario

@@ -144,7 +144,7 @@ const loadErrors = async (errors, form) => {
 }
 
 
-//Envio de datos ajax a crear 
+//Envio de datos ajax a crear
 async function ajaxFormRegisterVentas(event) {
     event.preventDefault();
 
@@ -153,6 +153,7 @@ async function ajaxFormRegisterVentas(event) {
     let data = [];
     data.push({ 'total_bruto': total_bruto.value })
     data.push({ 'impuesto': impuesto.value })
+    data.push({ 'total_rtFuente': total_rtFuente.value })
     data.push({ 'total': total.value })
     data.push({ 'cliente_id': formVentaRegister.cliente_id.value })
     data.push({ 'observaciones': formVentaRegister.observaciones.value })
@@ -171,7 +172,7 @@ async function ajaxFormRegisterVentas(event) {
             document.body.appendChild(link);
             link.click();
 
-            console.log(res.data);
+           // console.log(res.data);
             bodyTableCodigos.innerHTML = null;
             ventaArray = [];
             toastr.info('Remision guardada correctamente')

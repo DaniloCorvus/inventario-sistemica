@@ -11,9 +11,9 @@ class Venta extends Model
         'fecha',
         'num_factura',
         'empresa_id',
-
         'total_bruto',
-        'impuesto',
+        'total_impuesto',
+        'total_rtFuente',
         'total',
         'observaciones',
         'condiciones',
@@ -36,7 +36,7 @@ class Venta extends Model
     {
         return $this->hasMany(Detalle::class);
     }
-  
+
     function cliente()
     {
         # code...
