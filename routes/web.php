@@ -110,6 +110,8 @@ Route::get('/adicionales/{service}/index', 'AdicionalController@index')->name('a
 //Services
 Route::resource('/services', 'ServiceController', ['except' => 'update']);
 Route::resource('/detalle-venta', 'DetalleVentaController', ['except' => 'update']);
+Route::get('/descargar-venta/{id}', 'VentaController@descargar')->name('venta.descargar');
+
 Route::patch('/services/update', 'ServiceController@update')->name('services.update');
 Route::get('/services/filter/{finicio}/{ffin}', 'ServiceController@filtro');
 Route::post('/services/printservice/', 'ServiceController@printservice')->name('services.printservice');

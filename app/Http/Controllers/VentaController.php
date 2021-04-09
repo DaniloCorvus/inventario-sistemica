@@ -88,29 +88,31 @@ class VentaController extends Controller
                 }
 
 
-
-                $detalles = $venta->detalles()->with([
-                    'inventario' => function($query) {
-                        $query->select('id', 'productox_id','serie'); # Muchos a muchos
-                    },
-                    'inventario.producto' => function($query) {
-                        $query->select('id', 'descripcion', 'modelo' ); # Uno a muchos
-                    }
-                    ])->get();
-
-                $cliente = $venta->cliente()->first();
-
                 DB::commit();
-                $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
-                    ->save(public_path("pdfs/remision.pdf"));
-               /*  return view('pdfs.remision', compact('venta', 'detalles','cliente')); */
-
-                return  response()->download(public_path("/pdfs/remision.pdf"))->deleteFileAfterSend(true);
-            } catch (\Throwable $th) {
+                $this->descargar($venta->id);
+           } catch (\Throwable $th) {
                 DB::rollBack();
                 return response()->json($th->getMessage(), 400);
             }
         }
+    }
+
+    public function descargar($id){
+        $venta = Venta::find($id);
+        $detalles = $venta->detalles()->with([
+            'inventario' => function($query) {
+                $query->select('id', 'productox_id','serie'); # Muchos a muchos
+            },
+            'inventario.producto' => function($query) {
+                $query->select('id', 'descripcion', 'modelo' ); # Uno a muchos
+            }
+            ])->get();
+
+        $cliente = $venta->cliente()->first();
+        $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
+        ->save(public_path("pdfs/remision.pdf"));
+
+        return  response()->download(public_path("/pdfs/remision.pdf"))->deleteFileAfterSend(true);
     }
 
     /**

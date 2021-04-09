@@ -44,9 +44,12 @@
                             <th>Número de parte </th>
                             <th>Bodega</th>
                             <th>Modelo</th>
-                            <th> Serie</th>
+                            <th> Lote</th>
+                            <th>Ubicación</th>
                             <th> Coste de venta</th>
-                            <th> Cantidad disponible</th>
+                            <th>Cant. disponible</th>
+                            <th>Cant. inicial</th>
+                            <th>Cant. usada</th>
                             <th>Acción</th>
                             <th>Código Barras</th>
                         </tr>

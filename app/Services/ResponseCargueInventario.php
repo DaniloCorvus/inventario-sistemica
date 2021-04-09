@@ -2,22 +2,23 @@
 
 namespace App\Services;
 use App\Models\Inventario;
-
+use Illuminate\Support\Facades\DB;
 class ResponseCargueInventario
 {
 
     public function index($id)
     {
-        $res = Inventario::find($id)->Cargues;
-         
+
+        $res =DB::table('cargues_inventario')->whereIn('inventario_id', $id)->get();
+
         return datatables($res)
         ->editColumn('cambiarEstado', function ($res) {
          //   dd($res);exit;
             $button =  '<div class="text-lg-right text-nowrap">';
             $button .=
-                '  
-             
-                <select onChange="cambiarEstado('.$res->id.',event.target.value)" name="estado" 
+                '
+
+                <select onChange="cambiarEstado('.$res->id.',event.target.value)" name="estado"
                     class="form-contol custom-select" style="width:100%" required>
                     <option value="solicitado" '.($res->estado=='solicitado' ? 'selected' : '').' >Solicitado</option>
                     <option value="cancelado"  '.($res->estado=='cancelado' ? 'selected' : '').' >Cancelado</option>
@@ -33,7 +34,7 @@ class ResponseCargueInventario
        /*  ->editColumn('action', function ($res) {
             $button =  '<div class="text-lg-right text-nowrap">';
             $button .=
-                '<a class="btn btn-circle btn-primary mr-1" href="#" 
+                '<a class="btn btn-circle btn-primary mr-1" href="#"
                 title="VerHistorial">
                 <i class="fa fa-eye"></i>
                 </a>';
@@ -42,8 +43,8 @@ class ResponseCargueInventario
         }) */
         ->rawColumns([/* 'action', */'cambiarEstado'])
         ->addIndexColumn()
-        
-        
+
+
         ->toJson();
     }
 }

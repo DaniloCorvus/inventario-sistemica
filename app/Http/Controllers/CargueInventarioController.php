@@ -25,21 +25,25 @@ class CargueInventarioController extends Controller
     public function show($id)
     {
         //
-      
-        
+        $ids = explode(',',$id);
+
+        //dd($id);
         if (request()->expectsJson()) {
-            return $this->responseCargueInventario->index($id);
+/*
+            dd( $this->responseCargueInventario->index($ids)); */
+            return $this->responseCargueInventario->index($ids);
 
         }
 
-        $inventario = Inventario::where('id',$id)->with('producto')->first();
-        //dd($inventario);
-        return view('inventario.carguesInventario.index',compact('inventario'));
+        $inventario = Inventario::whereIn('id',$ids)->with('producto')->get();
+
+
+        return view('inventario.carguesInventario.index',compact('inventario','id'));
     }
 
     public function actualizarEstado(){
         if (request()->expectsJson()) {
-            
+
 
            $cargue = CargueInventario::find(request()->get('cargue_inventario_id'));
             $cargue->estado = request()->get('estado');
@@ -48,9 +52,10 @@ class CargueInventarioController extends Controller
 
 
                 $inventario = Inventario::find($cargue->inventario_id);
-                
+
 
                 $inventario->cantidad_disponible += $cargue->cantidad;
+                $inventario->cantidad += $cargue->cantidad;
                 $inventario->save();
             }
 
@@ -60,7 +65,7 @@ class CargueInventarioController extends Controller
             return abort(404);
         }
 
-   
+
     }
 
 }

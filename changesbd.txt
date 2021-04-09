@@ -1,0 +1,3 @@
+
+ALTER TABLE `inventario`
+	ADD COLUMN `ubicacion` VARCHAR(255) NULL DEFAULT NULL AFTER `cantidad_disponible`;

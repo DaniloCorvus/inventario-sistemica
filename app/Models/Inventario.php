@@ -9,10 +9,12 @@ class Inventario extends Model
 {
     //
     protected $table = 'inventario';
-  
+
     protected $fillable = ['productox_id' ,
     'serie' ,
     'cantidad' ,
+    'cantidad_disponible' ,
+    'ubicacion' ,
     'cellar_id' ];
 
     public function Cargues(){

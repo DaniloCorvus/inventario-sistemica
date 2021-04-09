@@ -20,20 +20,27 @@ class ResponseInventario
                 p.modelo,
                 cl.nombre as cellar,
                 i.serie,
-                i.cantidad_disponible,
-                i.id,
+                /* group_concat(i.ubicacion ,  " cant :", sum(i.cantidad_disponible)) as ubicacion, */
+                GROUP_CONCAT(CONCAT ( i.ubicacion , "  : ",
+                          i.cantidad_disponible ," /  "
+                    )
+                ) AS ubicacion,
+                SUM(i.cantidad_disponible) AS cantidad_disponible,
+                SUM(i.cantidad) AS cantidad,
+                SUM(i.cantidad - i.cantidad_disponible) AS cantidad_usada,
+                group_concat(i.id) as id,
 
-                IFNULL((
+                /*IFNULL((
                     SELECT costo_venta
                     FROM  cargues_inventario c
                     where c.inventario_id = i.id
                     ORDER BY c.created_at DESC LIMIT 1
-                ),0) AS costo_venta
+                ),*/0 AS costo_venta
 
                 FROM inventario i
                 INNER JOIN productox p on p.id = i.productox_id
                 INNER JOIN cellars cl on cl.id = i.cellar_id
-
+                GROUP BY p.id, cl.id, i.serie
         ';
         $res = DB::select($query);
 

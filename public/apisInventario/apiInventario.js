@@ -40,12 +40,24 @@ document.addEventListener('DOMContentLoaded', async function () {
             name: 'serie'
         },
         {
+            data: 'ubicacion',
+            name: 'ubicacion'
+        },
+        {
             data: 'costo_venta',
             name: 'costo_venta'
         },
         {
             data: 'cantidad_disponible',
             name: 'cantidad_disponible'
+        },
+        {
+            data: 'cantidad',
+            name: 'cantidad'
+        },
+        {
+            data: 'cantidad_usada',
+            name: 'cantidad_usada'
         },
 
         {

@@ -81,6 +81,7 @@ const calcular = (pos, elemt) => {
         let selecteds = []
         let cantSolicitdata =  parseInt(elemt.value)
         ventaArray[pos].producto.inventario.forEach(inv => {
+            console.log(inv,'in');
                let cantidad_disponible = parseInt(inv.cantidad_disponible)
              if ( cant < cantSolicitdata ) {
 
@@ -97,7 +98,7 @@ const calcular = (pos, elemt) => {
 
                 }
 
-                ventaArray[pos].serieSelected +=   ` ${inv.serie} - Cant. : ${valor} <br>`
+                ventaArray[pos].serieSelected +=   ` ${inv.serie} (${inv.ubicacion}) : ${valor} <br>`
                 ventaArray[pos].series = selecteds
             }
 

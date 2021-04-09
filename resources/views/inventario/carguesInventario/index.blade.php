@@ -15,52 +15,52 @@
                             <i class="mr-2 fa fa-reply " aria-hidden="true"></i>
                         </a>
                         CARGUES DEL PRODUCTO
-                  
+
                     </div>
-                    <input type="hidden"  id="inventario_id"  name="inventario_id" value="{{$inventario->id}}">
+                    <input type="hidden"  id="inventario_id"  name="inventario_id" value="{{$id}}">
                 </h6>
             </div>
             <div class="row px-4">
                 <div class="col-md" >
                     <div class="form-group">
                         <label for="staticEmail" >Cod. Interno</label>
-                        
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario->producto->cod_interno )}}">
-                    
-                    </div>  
+
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario[0]->producto->cod_interno )}}">
+
+                    </div>
                 </div>
                 <div class="col-md" >
                     <div class="form-group">
-                        <label for="staticEmail" >Serie</label>
-                        
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario->serie )}}">
-                    
-                    </div>  
+                        <label for="staticEmail" >Lote</label>
+
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario[0]->serie )}}">
+
+                    </div>
                 </div>
                 <div class="col-md" >
                     <div class="form-group">
                         <label for="staticEmail" >Modelo</label>
-                        
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario->producto->modelo )}}">
-                    
-                    </div>  
+
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario[0]->producto->modelo )}}">
+
+                    </div>
                 </div>
                 <div class="col-md" >
                     <div class="form-group">
                         <label for="staticEmail" >Núm. parte</label>
-                        
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario->producto->num_parte )}}">
-                    
-                    </div>  
+
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario[0]->producto->num_parte )}}">
+
+                    </div>
                 </div>
-              
+
                 <div class="col-md" >
                     <div class="form-group">
                         <label for="staticEmail" >Descripción</label>
-                        
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario->producto->descripcion )}}">
-                    
-                    </div>  
+
+                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ strtoupper( $inventario[0]->producto->descripcion )}}">
+
+                    </div>
                 </div>
             </div>
             <div class="table-responsive p-4">
@@ -74,6 +74,7 @@
                     <thead class="thead">
                         <tr>
                             <th></th>
+                            <th>Ubicación</th>
                             <th>Cantidad</th>
                             <th>Cost. Inicial</th>
                             <th>Imp.</th>

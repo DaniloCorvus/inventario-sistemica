@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             searchable: false
         },
         {
+            data: 'ubicacion',
+            name: 'ubicacion'
+        },
+        {
             data: 'cantidad',
             name: 'cantidad'
         },
@@ -36,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         {
             data: 'impuesto',
             name: 'impuesto'
-        }, 
+        },
         {
             data: 'costo_total',
             name: 'costo_total'
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             data: 'created_at',
             name: 'created_at'
         },
-      
+
         {
             data: 'cambiarEstado',
             name: 'cambiarEstado',
@@ -95,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    
+
 })
 
 // Traer datos de cliente

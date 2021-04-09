@@ -67,15 +67,15 @@ class InventarioController extends Controller
                 $dataProduct = json_decode(Request()->producto);
                 $dataCargue = $this->reqDataCargue($dataProduct);
 
+
                 $inventario = Inventario::where('productox_id',$dataProduct->id)
                                 ->where('cellar_id',$dataCargue['cellar_id'])
                                 ->where('serie',$dataCargue['serie'])
+                                ->where('ubicacion',trim($dataCargue['ubicacion']))
                                 ->first();
-
                 if($inventario){
                     if($dataCargue['estado'] == 'recibido' ){
                         $inventario->cantidad_disponible += $dataCargue['cantidad'];
-                    }else{
                         $inventario->cantidad += $dataCargue['cantidad'];
                     }
 
@@ -83,10 +83,13 @@ class InventarioController extends Controller
                     $dataCargue['inventario_id'] = $inventario->id;
                 }else{
                   /*   $inventario */
+                  $disponible = $dataCargue['estado'] == 'recibido' ? $dataCargue['cantidad'] : 0;
                   $dataCargue['inventario_id']  = Inventario::create([
                     'productox_id' => $dataCargue['productox_id'] ,
-                    'cantidad' => $dataCargue['cantidad'],
+                    'cantidad' => $disponible,
+                    'cantidad_disponible' => $disponible,
                     'serie' => $dataCargue['serie'],
+                    'ubicacion' => trim($dataCargue['ubicacion']),
                     'cellar_id' => $dataCargue['cellar_id'],
                   ])->id;
 
@@ -197,19 +200,21 @@ class InventarioController extends Controller
                                  WHERE i.productox_id = '.$producto->id.'
                                 AND cellar_id = '.$request['cellar_id'] . ' AND cantidad_disponible >  0 ' ;
                     $inventario  =  DB::select($sql);
-
                     if(!$inventario){
                         throw new Exception("No hay cantidades disponibles", 1);
                     }
+                    $last = $inventario[count($inventario)-1];
                     $total = 0;
                     foreach ($inventario as $key => $value) {
                         # code...
                         $total += $value->cantidad_disponible;
                     }
 
-                    $sql = ' SELECT c.costo_venta FROM cargues_inventario c
-                             WHERE c.estado = "recibido"
-                     ORDER BY c.fecha_compra DESC LIMIT 1' ;
+                    $sql = ' SELECT c.id, c.costo_venta FROM cargues_inventario c
+
+
+                        WHERE c.estado = "recibido" AND c.inventario_id='.$last->id.'
+                     ORDER BY c.id DESC LIMIT 1' ;
                     $cargue  =  DB::select($sql);
 
                     $producto['total'] = $total;
