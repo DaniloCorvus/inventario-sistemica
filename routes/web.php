@@ -228,6 +228,7 @@ Route::get('/update-masivo', 'UpdateController@index')->name('update.busqueda');
 Route::resource('/productox', 'ProductoxController', ['except' => 'update']);
 Route::post('/productox/update', 'ProductoxController@update')->name('productox.update');
 Route::post('/productox/import', 'ProductoxController@import')->name('productox.import');
+Route::post('/productox/estado', 'ProductoxController@actualizarEstado')->name('productox.estado');
 
 Route::get('/productox/{id}/ventas', 'ProductoxController@ventas')->name('productox.ventas');
 
@@ -235,12 +236,17 @@ Route::get('productos-bodega/{id}', 'CellarController@verProductos');
 
 //inventario
 Route::resource('/inventario', 'InventarioController', ['except' => 'update']);
+
+Route::get('/traslado-inventario', 'InventarioController@traslado')->name('inventario.trasladoIn');
 Route::post('/traslado-inventario', 'InventarioController@traslado')->name('inventario.traslado');
+Route::post('/traslado-inventario-save', 'InventarioController@trasladar')->name('inventario.trasladar');
 
 Route::resource('/cargue-inventario', 'CargueInventarioController', ['only' => 'show']);
 Route::post('/cargue-inventario/estado', 'CargueInventarioController@actualizarEstado')->name('cargue.estado');
 
 Route::post('/buscar-cantidades', 'InventarioController@buscarProducto')->name('inventario.inventariocantidades');
+
+
 
 //Seguimientos
 Route::resource('/pedidos', 'PedidoController', ['except' => 'update', 'index']);
@@ -261,6 +267,7 @@ Route::patch('/categorias/update', 'CategoriaController@update')->name('categori
 //Cellars
 Route::resource('/cellars', 'CellarController', ['except' => 'update']);
 Route::patch('/cellars/update', 'CellarController@update')->name('cellars.update');
+Route::patch('/cellars/{id}/edit', 'CellarController@edit')->name('cellars.edit');
 
 // //Empresa
 Route::resource('/empresa', 'EmpresaController');

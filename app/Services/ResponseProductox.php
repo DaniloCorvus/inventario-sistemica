@@ -30,7 +30,23 @@ class ResponseProductox
                 $button .= '</div>';
                 return $button;
             })
-            ->rawColumns(['action'])
+
+            ->editColumn('estado', function ($producto) {
+                $button =  '<div class="text-lg-right text-nowrap">';
+                    $button .=
+                        '
+
+                        <select onChange="cambiarEstado('.$producto->id.',event.target.value)" name="estado"
+                            class="form-contol custom-select" style="width:100%" required>
+                            <option value="activo" '.($producto->estado=='activo' ? 'selected' : '').' >Activo</option>
+                            <option value="inactivo"  '.($producto->estado=='inactivo' ? 'selected' : '').' >Inactivo</option>
+
+                        </select>
+                ';
+                    $button .= '</div>';
+                    return $button;
+            })
+            ->rawColumns(['action','estado'])
             ->addIndexColumn()
             ->toJson();
     }

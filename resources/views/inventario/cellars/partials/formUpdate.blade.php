@@ -17,16 +17,24 @@
 
                             <input type="hidden" name="id" id="id">
 
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label class="text-dark"> Nombre </label>
                                 <input type="text" class="form-control" id="nombre" required="required" name="nombre"
                                     placeholder="Nombre">
                             </div>
 
+                            <div class="form-group col-md-6">
+                                <label class="text-dark"> Estado </label>
+                                <select class="custom-select" name="estado" id="">
+                                    <option value="activo">Activa</option>
+                                    <option value="inactivo">Inactiva</option>
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-12">
-                                <label class="text-dark"> Descripcion </label>
-                                <textarea type="text" class="form-control" rows="3" cols="50" id="descripcion"
-                                    required="required" name="descripcion" placeholder="Ej: Se realiza ..."></textarea>
+                                <label class="text-dark"> Dirección </label>
+                                <textarea type="text" class="form-control" rows="3" cols="50" id="direccion"
+                                    required="required" name="direccion" placeholder="Ej: Se realiza ..."></textarea>
                             </div>
 
                             <div class="form-group col-md-3">

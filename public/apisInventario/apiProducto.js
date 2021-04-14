@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             name: 'descripcion'
         },
         {
+            data: 'estado',
+            name: 'estado'
+        },
+        {
             data: 'action',
             name: 'action',
             orderable: false,
@@ -103,6 +107,28 @@ function eliminarProducto(ente_id) {
     });
 }
 
+async function cambiarEstado(id,estado) {
+
+    let form = new FormData();
+    form.append('id',id)
+    form.append('estado',estado)
+    const register = await axios.post('/productox/estado', form).then(res => {
+     /*  refresh(res['data'])
+      $('#formProductoRegister').trigger("reset");
+      $('#modalProductoRegister').modal('hide'); */
+
+  }).catch((error) => {
+    /*   if (error.response.data.errors) {
+          for (var clave in error.response.data.errors) {
+              console.log(clave);
+              let container = formProductoRegister.elements.namedItem(clave);
+              container.classList.add('is-invalid');
+              toastr.error(`<li> ${error.response.data.errors[clave]} </li>`);
+          }
+          console.error(error.response.data);
+      } */
+  })
+  }
 
 const refresh = async (success) => {
     await dataTableProductox.draw();

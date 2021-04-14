@@ -74,7 +74,7 @@
                         </table>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-12 mt-2">
                         <label class="text-dark">Cliente </label>
                         <select id="clientes" name="cliente_id">
                             @if (isset($clientes) && count($clientes)>0)
@@ -88,13 +88,35 @@
                         </select>
                     </div>
 
-                    <div class="col-md-12">
+
+                    <div class="form-group col-md-6 mt-2">
+                        <label class="text-dark">Tipo de factura</label>
+                        <select name="tipo"  onchange="tipox(event)"  id="tipo" class="selectpickerp custom-select m-2" style="width:100%" required>
+                                <option value="Carry In">Carry In</option>
+                                <option value="In Home">In Home</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6 mt-2" >
+                        <label class="text-dark">Estado de factura</label>
+                        <select name="estado"  id="estado" class="selectpickerp custom-select m-2" style="width:100%" required>
+                                <option value="Pendiente despacho">Pendiente despacho</option>
+                                <option value="Despachado">Despachado</option>
+                                <option value="Venta en reserva">Venta en reserva</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-12 mt-2">
                         <label class="text-dark">Numero de factura </label>
                         <input id="num_factura" type="text" class="form-control" name="num_factura"
                             value="{{ old('num_factura') }}" autocomplete="num_factura">
                         <span class="invalid-feedback" role="alert">
                         </span>
                     </div>
+
                     <div class="col-md-12">
                         <label class="text-dark"> Total Bruto </label>
                         <input id="total_bruto" readonly type="text" class="form-control" name="total_bruto"

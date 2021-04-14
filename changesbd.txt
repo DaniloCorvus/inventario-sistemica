@@ -1,3 +1,12 @@
 
 ALTER TABLE `inventario`
 	ADD COLUMN `ubicacion` VARCHAR(255) NULL DEFAULT NULL AFTER `cantidad_disponible`;
+ALTER TABLE `produtctox`
+	ADD COLUMN `estado` VARCHAR(255) NULL DEFAULT NULL AFTER `codigo`;
+ALTER TABLE `ventas`
+	ADD COLUMN `user_id` INT(11) NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `ventas`
+	ADD COLUMN `tipo_venta` VARCHAR(200) NULL DEFAULT NULL AFTER `user_id`;
+ALTER TABLE `ventas`
+	ADD COLUMN `estado_tipo_venta` VARCHAR(200) NULL DEFAULT NULL AFTER `user_id`;
+

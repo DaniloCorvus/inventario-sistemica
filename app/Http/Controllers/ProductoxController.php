@@ -106,9 +106,28 @@ class ProductoxController extends Controller
         $producto = Producto::FindOrfail($id);
         $proveedores = Proveedor::select('id', 'nombre')->get();
         $bodegas = Cellar::select('id', 'nombre')->get();
-        return view('inventario.productos.partials.formUpdate', compact('producto', 'proveedores', 'bodegas'));
+        return view('inventario.
+        productos.partials.formUpdate', compact('producto', 'proveedores', 'bodegas'));
     }
 
+    public function actualizarEstado()
+{
+    if (request()->expectsJson()) {
+
+
+        $prod = Producto::find(request()->get('id'));
+        $prod->estado = request()->get('estado');
+       # dd($prod->estado);
+        $prod->save();
+
+
+         return response()->json(['data'=>'actualizado con éxito']);
+
+     }else{
+         return abort(404);
+     }
+
+}
     public function create()
     {
         $proveedores = Proveedor::select('id', 'nombre')->get();

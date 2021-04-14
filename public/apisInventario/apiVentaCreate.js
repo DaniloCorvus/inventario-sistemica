@@ -159,6 +159,8 @@ async function ajaxFormRegisterVentas(event) {
     data.push({ 'observaciones': formVentaRegister.observaciones.value })
     data.push({ 'num_factura': formVentaRegister.num_factura.value })
     data.push({ 'productos': ventaArray })
+    data.push({ 'tipo_venta': formVentaRegister.tipo.value  })
+    data.push({ 'estado_tipo_venta': formVentaRegister.estado.value  })
     const register = await axios.post(formVentaRegister.action, data, { responseType: 'blob',  },).then(res => {
 
         if (res.status != 200) {

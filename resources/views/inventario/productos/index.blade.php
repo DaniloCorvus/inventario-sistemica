@@ -40,6 +40,7 @@
                             <th>Modelo</th>
                             <th>Codigo interno</th>
                             <th>Descripción</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                             <th>Codigo barras</th>
 

@@ -149,6 +149,7 @@
                 <a class="collapse-item" href="{{route('inventario.index')}}">Inventario</a>
                 <a class="collapse-item" href="{{route('categorias.index')}}">Categorias</a>
                 <a class="collapse-item" href="{{route('cellars.index')}}">Bodegas</a>
+                <a class="collapse-item" href="{{route('inventario.trasladoIn')}}">Traslado entre bodegas</a>
                 {{-- <a class="collapse-item" href="{{route('pedidos.index')}}">Pedidos</a> --}}
                 <a class="collapse-item" href="{{route('ventas.index')}}">Ventas</a>
             </div>

@@ -29,7 +29,10 @@ class Venta extends Model
         'dinero_recibido',
         'happycall_calificacion',
         'happycallestado_id',
-        'observacion_happy'
+        'observacion_happy',
+        'tipo_venta',
+        'estado_tipo_venta',
+        'user_id',
     ];
 
     public function detalles()

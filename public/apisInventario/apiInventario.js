@@ -1,8 +1,20 @@
 let btnSaveProducto = document.getElementById("btnSaveProducto");
 
-document.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded',filtrarx)
+bodega = '';
+// Traer datos de
+async function filtrar(event){
 
-    // datatables settings
+        console.log(event.target.value);
+        bodega = event.target.value
+
+
+
+  dataTableInventario.ajax.reload()
+}
+ async function filtrarx (){
+      // datatables settings
+
     $.fn.dataTable.ext.errMode = 'none';
     dataTableInventario = await $('#dataTableInventario').DataTable({
         processing: true,
@@ -11,7 +23,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         responsive: true,
         autoWidth: false,
 
-        ajax: SITEURL + "/inventario/",
+        ajax:{
+         url: SITEURL + "/inventario",
+         "data": {
+            id: function() { return bodega },
+        }
+        },
 
         columns: [{
             data: 'DT_RowIndex',
@@ -94,11 +111,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             },
         }
     });
-
-
-})
-
-// Traer datos de cliente
+ }
 
 async function editarProducto(ente_id) {
     window.location = '/productox/' + ente_id + '/edit';

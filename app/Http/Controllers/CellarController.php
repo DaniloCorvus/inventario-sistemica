@@ -30,7 +30,7 @@ class CellarController extends Controller
         }
         return view('inventario.cellars.index');
     }
-    
+
     public function show($id)
     {
         try {
@@ -43,7 +43,7 @@ class CellarController extends Controller
             return response()->json($th->getMessage(),  500);
         }
     }
-    
+
     public function store(CellarStoreRequest $CellarRequest)
     {
         try {
@@ -53,11 +53,12 @@ class CellarController extends Controller
             return response()->json($th->getMessage(),  500);
         }
     }
-    
-    public function update(CellarUpdateRequest $CellarUpdateRequest, $id)
+
+    public function update()
     {
         try {
-            if ($this->repository->update($CellarUpdateRequest->all(), $id)) {
+
+            if ($this->repository->update(request()->except(['_token','_method']), request()->id)) {
                 return response()->json('Update Correcto',  200);
             }
             return response()->json('Operacion no realizada. Posible error: Cellar no found',  404);
@@ -65,11 +66,17 @@ class CellarController extends Controller
             return response()->json($th->getMessage(),  500);
         }
     }
-    
+
     public function destroy($id)
     {
         try {
+
+            if (($this->repository->cantidades($id))) {
+                # code...
+                return response()->json('La bodega aun cuenta con cantidades disponibles',  40);
+            }
             if (($this->repository->delete($id))) {
+
                 return response()->json('Eliminado Correcto',  200);
             }
             return response()->json('Operacion no realizada. Posible error: Cellar no found',  404);
@@ -77,7 +84,7 @@ class CellarController extends Controller
             return response()->json($th->getMessage(),  500);
         }
     }
-    
+
     public function verProductos($id)
     {
         if (request()->expectsJson()) {
@@ -87,5 +94,8 @@ class CellarController extends Controller
             }
             return view('inventario.cellars.productos', compact('id'));
         }
-    }
-    
+        public function edit($id){
+            return response()->json(Cellar::findOrFail($id));
+        }
+}
+

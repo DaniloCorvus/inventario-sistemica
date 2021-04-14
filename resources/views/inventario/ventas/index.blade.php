@@ -25,11 +25,12 @@
                     id="dataTableVentas">
                     <thead class="thead">
                         <tr>
-                            <th>Observacion</th>
-                            <th>Valor/unidad</th>
-                            <th>iva</th>
-                            <th>Total</th>
-                            <th>Aciones</th>
+                            <th>Remisión</th>
+                            <th>Nombre cliente</th>
+                            <th>Fecha Recepción</th>
+                            <th>Vendedor</th>
+                            <th>Estado</th>
+                            <th>Fecha Finalizado</th>
                         </tr>
                     </thead>
                     <tbody id="bodyTableVentas">

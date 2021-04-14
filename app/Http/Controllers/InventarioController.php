@@ -32,7 +32,10 @@ class InventarioController extends Controller
         //
         if (request()->expectsJson()) {
 
-            return $this->responseInventario->index();
+            $id = request()->id ? request()->id : '';
+
+
+            return $this->responseInventario->index($id);
         }
         $bodegas = Cellar::select('id', 'nombre')->get();
 
@@ -47,7 +50,7 @@ class InventarioController extends Controller
     public function create()
     {
         $proveedores = Proveedor::select('id', 'nombre')->get();
-        $bodegas = Cellar::select('id', 'nombre')->get();
+        $bodegas = Cellar::select('id', 'nombre')->where('estado','activo')->get();
         return view('inventario.inventario.partials.formRegister', compact('proveedores', 'bodegas'));
     }
 
@@ -195,6 +198,7 @@ class InventarioController extends Controller
             try {
                 $producto = Productox::where('codigo', '=', $request['codigo'] )->first();
                 if ($producto) {
+                    if($producto->estado != 'activo' )  throw new Exception("El Producto no se encuentra activo", 1);
                     $sql = ' SELECT i.*
                                 FROM inventario i
                                  WHERE i.productox_id = '.$producto->id.'
@@ -210,16 +214,21 @@ class InventarioController extends Controller
                         $total += $value->cantidad_disponible;
                     }
 
+
                     $sql = ' SELECT c.id, c.costo_venta FROM cargues_inventario c
-
-
                         WHERE c.estado = "recibido" AND c.inventario_id='.$last->id.'
                      ORDER BY c.id DESC LIMIT 1' ;
                     $cargue  =  DB::select($sql);
-
                     $producto['total'] = $total;
-                    $producto['costo_venta'] = $cargue[0]->costo_venta;
-                    $producto['valor_total'] = $cargue[0]->costo_venta;
+                    if($cargue){
+
+                        $producto['costo_venta'] = $cargue[0]->costo_venta;
+                        $producto['valor_total'] = $cargue[0]->costo_venta;
+                    }else{
+                        $producto['costo_venta'] = 0;
+                        $producto['valor_total'] = 0;
+
+                    }
                     $producto['inventario'] = $inventario;
 
                     return response()->json($producto);
@@ -239,51 +248,85 @@ class InventarioController extends Controller
     }
 
     public function traslado(){
-        try {
-            //code...
-            $data = Request()->all();
-            $inventario = Inventario::find($data['id_inventario']);
+        if (request()->expectsJson()) {
 
-            if($inventario->cellar_id == $data['cellar_id'])
-                throw new Exception("Debe seleccionar una bodega diferente", 1);
+            try {
+                //code...
+                $request = Request()->all();
+                return $this->responseInventario->traslado($request);
+                dd($request);
 
-            if($inventario->cantidad_disponible < $data['cantidad'])
-                throw new Exception("La cantidad es insuficiente", 1);
+                return response()->json(200);
 
-            $traslado = Inventario::where('cellar_id',$data['cellar_id'])
-                                    ->where('serie',$inventario->serie)
-                                    ->where('productox_id',$inventario->productox_id)
-                                    ->first();
-           # dd($traslado);
-            if($traslado){
-                $traslado->cantidad_disponible += $data['cantidad'];
-                $traslado->save();
-            }else{
-                $traslado = new Inventario();
-                $traslado->productox_id = $inventario->productox_id;
-                $traslado->serie = $inventario->serie;
-                $traslado->cellar_id = $data['cellar_id'];
-                $traslado->cantidad_disponible = $data['cantidad'];
-                $traslado->cantidad = $data['cantidad'];
-                $traslado->save();
-
+            } catch (\Throwable $th) {
+                //throw $th;
+                return response()->json(['errors'=>$th->getMessage()],400);
             }
-            $saveCantidad = $inventario->cantidad - $data['cantidad'];
-            $inventario->cantidad = $saveCantidad < 0 ? 0 : $saveCantidad;
 
-            $saveCantidadDis = $inventario->cantidad_disponible - $data['cantidad'];
-            $inventario->cantidad_disponible = $saveCantidadDis < 0 ? 0 : $saveCantidadDis;
-
-            $inventario->save();
-            return response()->json(200);
-
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json(['errors'=>$th->getMessage()],400);
         }
+
+        $bodegas = Cellar::select('id', 'nombre')->get();
+
+        return view('inventario.traslado.index',compact('bodegas'));
+
     }
 
     public function buscarCantidad(){
+
+    }
+
+    public function trasladar(){
+
+        try {
+            //code...
+            $data = Request()->all();
+
+
+        $data['productos'] = json_decode($data['productos'],true);
+
+        foreach ($data['productos'] as $key => $producto) {
+            # code...
+            if($producto['nueva_cantidad'] && $producto['nueva_cantidad'] > 0 ){
+
+
+                $inventario = Inventario::find($producto['id']);
+
+                $traslado = Inventario::where('cellar_id',$data['to_cellar_id'])
+                                        ->where('serie',$inventario->serie)
+                                        ->where('productox_id',$inventario->productox_id)
+                                        ->where('ubicacion',$producto['nueva_ubicacion'])
+                                        ->first();
+
+                if($traslado){
+                    $traslado->cantidad_disponible += $producto['nueva_cantidad'];
+                    $traslado->save();
+                }else{
+                    $traslado = new Inventario();
+                    $traslado->productox_id = $inventario->productox_id;
+                    $traslado->serie = $inventario->serie;
+                    $traslado->cellar_id = $data['to_cellar_id'];
+                    $traslado->cantidad_disponible = $producto['nueva_cantidad'];
+                    $traslado->cantidad = $producto['nueva_cantidad'];
+                    $traslado->ubicacion = $producto['nueva_ubicacion'];
+                    $traslado->save();
+
+                }
+                $saveCantidad = $inventario->cantidad - $producto['nueva_cantidad'];
+                $inventario->cantidad = $saveCantidad < 0 ? 0 : $saveCantidad;
+
+                $saveCantidadDis = $inventario->cantidad_disponible - $producto['nueva_cantidad'];
+                $inventario->cantidad_disponible = $saveCantidadDis < 0 ? 0 : $saveCantidadDis;
+
+                $inventario->save();
+
+                return response()->json('exitoso',200);
+            }
+        }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json($th->getMessage(),400);
+        }
+
 
     }
 

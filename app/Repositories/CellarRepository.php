@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Cellar;
+use App\Models\Inventario;
 
 class CellarRepository implements InterfazRepository
 {
@@ -31,21 +32,21 @@ class CellarRepository implements InterfazRepository
             ->editColumn('action', function ($categoria) {
 
                 $button =  '<div class="text-lg-right text-nowrap">';
-                // $button .=
-                //     '<a class="btn btn-circle btn-primary mr-1" href="javascript:void(0)" onclick="editarCellar(' . $categoria->id . ')"
-                //             title="Editar">
-                //             <i class="fa fa-edit"></i>
-                //             </a>';
-                // $button .=
-                //     '<a class="btn btn-circle btn-danger mr-1" href="javascript:void(0)" onclick="eliminarCellar(' . $categoria->id . ')"
-                //             title="Eliminar">
-                //             <i class="fa fa-fw fa-trash"></i>
-                //             </a>';
-                // $button .=
-                //     '<a class="btn btn-circle text-white btn-info delete-cellar" href="javascript:void(0)"
-                // onclick="verProductos(' . $categoria->id . ')" data-toggle="tooltip" title="ver productos en esta bodega">
-                //     <i class="fa fa-fw fa-eye"></i>
-                // </a>';
+                 $button .=
+                     '<a class="btn btn-circle btn-primary mr-1" href="javascript:void(0)" onclick="editarCellar(' . $categoria->id . ')"
+                             title="Editar">
+                             <i class="fa fa-edit"></i>
+                             </a>';
+                 $button .=
+                     '<a class="btn btn-circle btn-danger mr-1" href="javascript:void(0)" onclick="eliminarCellar(' . $categoria->id . ')"
+                             title="Eliminar">
+                             <i class="fa fa-fw fa-trash"></i>
+                             </a>';
+                 $button .=
+                     '<a class="btn btn-circle text-white btn-info delete-cellar" href="/inventario"
+                 data-toggle="tooltip" title="ver productos en esta bodega">
+                     <i class="fa fa-fw fa-eye"></i>
+                 </a>';
                 $button .= '</div>';
 
                 return $button;
@@ -72,6 +73,12 @@ class CellarRepository implements InterfazRepository
     public function delete($id)
     {
         return $this->model->destroy($id);
+    }
+    public function cantidades($id)
+    {
+        return Inventario::where('cellar_id', $id)
+                            ->where('cantidad_disponible','>',0)
+                        ->first();
     }
 
     public function find($id)

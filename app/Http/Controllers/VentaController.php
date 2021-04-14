@@ -14,6 +14,8 @@ use App\Models\Inventario;
 //use App\Models\Producto;
 use App\Services\ResponseVenta;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -34,11 +36,14 @@ class VentaController extends Controller
      */
     public function index()
     {
+
         if (request()->expectsJson()) {
             return  $this->responseVenta->index();
         }
-        $clientes = Cliente::get(['nombre', 'apellido', 'id']);
- ;
+        $clientes = Cliente::get(['nombre', 'apellido', 'id','identificacion']);
+
+  /*       Cliente::select(DB::raw("CONCAT('apellido','id') AS ID"))->get()
+; */
         return view('inventario.ventas.index', compact('clientes'));
     }
 
@@ -52,9 +57,9 @@ class VentaController extends Controller
     {
 
         if (request()->expectsJson()) {
-          // dd(request()->all());
+          # dd(request()->all());
             try {
-
+               # dd(Auth::user()->id);
                 DB::beginTransaction();
 
                 $venta =   Venta::create([
@@ -65,6 +70,10 @@ class VentaController extends Controller
                     'cliente_id'    => request()->get(4)['cliente_id'],
                     'observaciones' => request()->get(5)['observaciones'],
                     'num_factura' => request()->get(6)['num_factura'],
+                    'tipo_venta' => request()->get(8)['tipo_venta'],
+                    'fecha' => Carbon::now(),
+                    'estado_tipo_venta' => request()->get(9)['estado_tipo_venta'],
+                    'user_id' => Auth::user()->id,
                 ]);
 
                 foreach (request()->get(7)['productos'] as $prod) {
@@ -87,9 +96,25 @@ class VentaController extends Controller
                     }
                 }
 
+         $detalles = $venta->detalles()->with([
 
-                DB::commit();
-                $this->descargar($venta->id);
+             'inventario' => function($query) {
+                 $query->select('id', 'productox_id','serie'); # Muchos a muchos
+             },
+
+             'inventario.producto' => function($query) {
+                 $query->select('id', 'descripcion', 'modelo' ); # Uno a muchos
+             }
+             ])->get();
+
+         $cliente = $venta->cliente()->first();
+
+         DB::commit();
+         $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
+             ->save(public_path("pdfs/remision.pdf"));
+
+         return  response()->download(public_path("/pdfs/remision.pdf"))->deleteFileAfterSend(true);
+
            } catch (\Throwable $th) {
                 DB::rollBack();
                 return response()->json($th->getMessage(), 400);
@@ -107,10 +132,10 @@ class VentaController extends Controller
                 $query->select('id', 'descripcion', 'modelo' ); # Uno a muchos
             }
             ])->get();
+            $cliente = $venta->cliente()->first();
+            $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
+            ->save(public_path("pdfs/remision.pdf"));
 
-        $cliente = $venta->cliente()->first();
-        $pdf = PDF::loadView('pdfs.remision', compact('venta', 'detalles','cliente'))
-        ->save(public_path("pdfs/remision.pdf"));
 
         return  response()->download(public_path("/pdfs/remision.pdf"))->deleteFileAfterSend(true);
     }
@@ -151,9 +176,11 @@ class VentaController extends Controller
 
     public function create()
     {
-        $bodegas = Cellar::select('id', 'nombre')->get();
+        $bodegas = Cellar::select('id', 'nombre')->where('estado','activo')->get();
 
-        $clientes = Cliente::get(['nombre', 'apellido', 'id']);
+/*         $clientes = Cliente::get(['nombre', 'apellido', 'id','identificacion']); */
+        $select = ' SELECT nombre , CONCAT(apellido, " " , identificacion) AS apellido , id, identificacion from clientes';
+        $clientes = DB::select($select);
         return view('inventario.ventas.partials.formRegister', compact('clientes','bodegas'));
     }
 

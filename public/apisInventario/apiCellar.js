@@ -107,6 +107,7 @@ function ajaxFormRegisterCellar(event) {
 
 // Traer datos de Cellar
 function editarCellar(ente_id) {
+
     const url = SITEURL + '/cellars/' + ente_id + '/edit'
     const formCellarUpdate = document.getElementById('formCellarUpdate');
     fetch(url, {
@@ -120,9 +121,11 @@ function editarCellar(ente_id) {
         .then(response => {
             if (response.ok) {
                 response.json().then(success => {
+                    console.log(success);
                     formCellarUpdate.id.value = success.id;
                     formCellarUpdate.nombre.value = success.nombre;
                     formCellarUpdate.direccion.value = success.direccion;
+                    formCellarUpdate.estado.value = success.estado;
                     $('#modalCellarUpdate').modal('show')
                 });
             }
@@ -201,13 +204,14 @@ function eliminarCellar(ente_id) {
                             response.text().then(error => {
                                 toastr.remove()
                                 // toastr.error('Error:', error);
-                                console.log('request failed', error);
+                                console.log('request failed111', error);
+                                toastr.warning('Error:', error);
 
                             })
                         }
                     })
                     .catch(error => {
-                        console.log('request failed', error);
+                        console.log('request failed22', error);
                     });
             } else {
                 toastr.remove()

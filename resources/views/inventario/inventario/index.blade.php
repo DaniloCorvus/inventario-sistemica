@@ -21,14 +21,27 @@
                         </a>
 
 
-
                         <!-- <a href="javascript:void(0)" class="text-white btn btn-circle btn-dark mr-1" data-toggle="modal"
                             data-placement="top" data-target="#modalProductoImport" title="importar productox">
                             <i class="fa fa-fw fa-upload"></i>
                         </a> -->
                         Inventario
                     </div>
+
                 </h6>
+
+                <div class="form-group col-md-4">
+                    <select name="from_cellar_id" onchange="filtrar(event)" id="from_cellar_id"class="selectpickerp custom-select m-2" style="width:100%" required>
+                            @if (isset($bodegas) && count($bodegas)>0)
+                            <option value="">Todas</option>
+                            @foreach ($bodegas as $bodega)
+                        <option value="{{$bodega->id}}">{{$bodega->nombre}}</option>
+                            @endforeach
+                            @else
+                        <option>Sin bodegas</option>
+                            @endif
+                    </select>
+                </div>
             </div>
             <div class="table-responsive p-3">
 

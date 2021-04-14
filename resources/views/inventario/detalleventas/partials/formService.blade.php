@@ -36,17 +36,27 @@
                     </select>
                 </div>
 
-                <div class="form-group col-md-6">
-                    <label class="text-dark"> Tipo de venta </label>
-                    <select name="tipo_id" class="form-control" required>
 
 
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-
-                        <option>Sin Tipo de Servicios</option>
+                <div class="form-group col-md-6 mt-2">
+                    <label class="text-dark">Tipo de factura</label>
+                    <select name="tipo_venta"  onchange="tipox(event)"  id="tipo" class="selectpickerp custom-select m-2" style="width:100%" required>
+                            <option value="Carry In" {{$venta->tipo_venta=='Carry In' ? 'selected' : ''}}>Carry In</option>
+                            <option value="In Home"  {{$venta->tipo_venta=='In Home' ? 'selected' : ''}}>In Home</option>
 
                     </select>
+                </div>
+
+                <div class="form-group col-md-6 mt-2" >
+                    <label class="text-dark">Estado de factura</label>
+                    <select name="estado_tipo_venta"  id="estado" class="selectpickerp custom-select m-2" style="width:100%" required>
+                            <option value="Pendiente despacho"  {{$venta->estado_tipo_venta=='Pendiente despacho' ? 'selected' : ''}} >Pendiente despacho (In Home) </option>
+                            <option value="Despachado"  {{$venta->estado_tipo_venta=='Despachado' ? 'selected' : ''}}>Despachado (In Home) </option>
+                            <option value="Entregado"  {{$venta->estado_tipo_venta=='Entregado' ? 'selected' : ''}}>Entregado (Carry In)</option>
+                            <option value="Venta en reserva"  {{$venta->estado_tipo_venta=='Venta en reserva' ? 'selected' : ''}} >Venta en reserva (In Home / Carry In) </option>
+
+                    </select>
+
                 </div>
 
                 <div class="form-group col-md-6">
@@ -140,7 +150,7 @@
                     <button type="button" class="btn btn-outline btn-sm" "></button>
                 </div>
 
-              
+
 
                 <div class=" form-group col-md-6">
                         <input type="submit" class="btn btn-outline-info  btn-sm " id="btnUpdateVenta" value="Enviar">

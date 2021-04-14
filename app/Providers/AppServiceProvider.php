@@ -45,5 +45,5 @@ class AppServiceProvider extends ServiceProvider
         Cliente::observe(ClienteObserver::class);
     }
 
-    
+
 }

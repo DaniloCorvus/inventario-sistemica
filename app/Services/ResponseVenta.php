@@ -3,13 +3,23 @@
 namespace App\Services;
 
 use App\Models\Venta;
+use Illuminate\Support\Facades\DB;
 
 class ResponseVenta
 {
 
     public function index()
     {
-        return datatables(Venta::all())
+        $venta = DB::select('select v.*,
+                 concat("REM",v.id) as remision,
+                 concat_ws(" ",c.nombre,c.apellido) as cliente,
+                 u.name as vendedor
+              FROM ventas v
+              INNER JOIN clientes c ON c.id = v.cliente_id
+              LEFT JOIN users u ON u.id = v.user_id
+
+              ORDER BY id DESC');
+        return datatables($venta)
             ->editColumn('action', function ($categoria) {
 
                 $button =  '<div class="text-lg-right text-nowrap">';

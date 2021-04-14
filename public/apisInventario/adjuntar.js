@@ -117,6 +117,8 @@ const calcular = (pos, elemt) => {
 
 }
 
+
+
 const reCalcular = (pos, elemt) => {
     console.log(pos,elemt);
     ventaArray[pos].producto.costo_venta = elemt.value
@@ -221,4 +223,41 @@ const refresh1 = async (success) => {
     //await dataTableProductox.draw();
   //  await toastr.remove()
     await toastr.info('Success:', 'Producto registrado correctamente');
+}
+
+
+function tipox(event){
+    console.log(event);
+    var sel = document.getElementById('estado');
+    //clear
+    var length = sel.options.length;
+    for (i = length-1; i >= 0; i--) {
+      sel.options[i] = null;
+    }
+    if(event.target.value == 'Carry In'){
+        var opt = document.createElement('option');
+        opt.appendChild( document.createTextNode('Pendiente despacho') );
+        opt.value = 'Pendiente despacho';
+        sel.appendChild(opt);
+        opt = document.createElement('option');
+        opt.appendChild( document.createTextNode('Despachado') );
+        opt.value = 'Despachado';
+        sel.appendChild(opt);
+        opt = document.createElement('option');
+        opt.appendChild( document.createTextNode('Venta en reserva') );
+        opt.value = 'Venta en reserva';
+        sel.appendChild(opt);
+    }else{
+
+        var opt = document.createElement('option');
+        opt.appendChild( document.createTextNode('Despachado') );
+        opt.value = 'Despachado';
+        sel.appendChild(opt);
+
+        opt = document.createElement('option');
+        opt.appendChild( document.createTextNode('Venta en reserva') );
+        opt.value = 'Venta en reserva';
+        sel.appendChild(opt);
+    }
+
 }

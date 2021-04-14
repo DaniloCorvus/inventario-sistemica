@@ -11,8 +11,13 @@ use Psy\Command\EditCommand;
 class ResponseInventario
 {
 
-    public function index()
+    public function index($id)
     {
+        $cond = '';
+        if ($id) {
+            # code...
+            $cond = ' WHERE i.cellar_id ='.$id;
+        }
         $query = '
         SELECT  p.num_parte,
                 p.codigo,
@@ -40,6 +45,7 @@ class ResponseInventario
                 FROM inventario i
                 INNER JOIN productox p on p.id = i.productox_id
                 INNER JOIN cellars cl on cl.id = i.cellar_id
+                '.$cond.'
                 GROUP BY p.id, cl.id, i.serie
         ';
         $res = DB::select($query);
@@ -72,5 +78,14 @@ class ResponseInventario
             ->rawColumns(['action'])
             ->addIndexColumn()
             ->toJson();
+    }
+
+    public function traslado($req){
+        $query='SELECT i.* , ""  as nueva_ubicacion, "0" as nueva_cantidad  FROM inventario i
+                    inner join productox p on p.id = i.productox_id
+                    WHERE cellar_id = '.$req['from_cellar_id'].' AND p.codigo = "'.$req['codigo'].'"
+                    AND i.cantidad_disponible > 0';
+        $res = DB::select($query);
+        return response()->json($res,200);
     }
 }

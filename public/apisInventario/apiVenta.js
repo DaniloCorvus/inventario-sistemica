@@ -22,28 +22,48 @@ document.addEventListener('DOMContentLoaded', async function () {
         // <th>Total</th>
         // <th>Aciones</th>
 
+        /*
+           <th>Remisión</th>
+                            <th>Nombre cliente/th>
+                            <th>Fecha Recepción</th>
+                            <th>Vendedor</th>
+                            <th>Estado</th>
+                            <th>Fecha Finalizado</th>
+        */
         columns: [
             {
-                data: 'observaciones',
-                name: 'observaciones',
+                data: 'remision',
+                name: 'remision',
                 orderable: false,
                 searchable: false
             },
             {
-                data: 'total_bruto',
-                name: 'total_bruto',
+                data: 'cliente',
+                name: 'cliente',
                 orderable: false,
                 searchable: false
             },
             {
-                data: 'iva',
-                name: 'iva',
+                data: 'fecha',
+                name: 'fecha',
                 orderable: false,
                 searchable: false
             },
             {
-                data: 'total',
-                name: 'total',
+                data: 'vendedor',
+                name: 'vendedor',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'estado_tipo_venta',
+                name: 'estado_tipo_venta',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'fecha_entregado',
+                name: 'fecha_entregado',
                 orderable: false,
                 searchable: false
             },
@@ -72,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     })
 })
 
-/* 
+/*
 async function ajaxFormRegisterVentas(event) {
     event.preventDefault();
 
@@ -180,7 +200,7 @@ const loadErrors = async (errors, form) => {
 }
 
 
-// //Envio de datos ajax a crear 
+// //Envio de datos ajax a crear
 // async function ajaxFormRegisterVentas(event) {
 //     event.preventDefault();
 
